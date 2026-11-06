@@ -1,0 +1,643 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#efe8fa">
+<title>para ti <3</title>
+
+<!-- Fuentes de Google (necesitan internet; si no hay, usa letras del sistema) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+/* ============ COLORES Y LETRAS (cambia la paleta aquí) ============ */
+:root{
+  --lila:#efe8fa; --lavanda:#b9a6e8; --lavanda-osc:#7a64b8; --rosa:#f3b6cf; --rosa-osc:#e88bb2;
+  --blanco:#fffdfd; --tinta:#3d3557;
+  --mano:'Kalam','Segoe Print','Bradley Hand',cursive;
+  --texto:'Quicksand','Segoe UI',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:var(--texto);color:var(--tinta);line-height:1.6;min-height:100dvh;overflow-x:hidden;
+  background:radial-gradient(110% 70% at 50% 0%,#faf6ff 0%,var(--lila) 55%,#e3d7f5 100%) fixed;
+  padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+}
+h1,h2,h3{font-family:var(--mano);font-weight:700;line-height:1.15}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+:focus-visible{outline:3px solid var(--lavanda-osc);outline-offset:3px;border-radius:10px}
+
+/* polvo de estrellas del fondo (lo crea el JS) */
+#polvo{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+#polvo svg{position:absolute;animation:titila 4s ease-in-out infinite}
+@keyframes titila{0%,100%{opacity:.2;transform:scale(.8)}50%{opacity:.9;transform:scale(1.05)}}
+
+/* ============ BIENVENIDA ============ */
+#bienvenida{
+  position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1.4rem;padding:1.5rem;text-align:center;
+  background:radial-gradient(110% 70% at 50% 0%,#faf6ff 0%,var(--lila) 60%,#e3d7f5 100%);
+  transition:opacity 1s ease,visibility 1s;
+}
+#bienvenida.fuera{opacity:0;visibility:hidden}
+#constelacion{width:min(250px,64vw);overflow:visible}
+#constelacion .linea{fill:none;stroke:var(--lavanda);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:1;stroke-dashoffset:1;animation:dibuja 3.2s ease-in-out .3s forwards}
+@keyframes dibuja{to{stroke-dashoffset:0}}
+#constelacion .e{opacity:0;animation:aparece .6s ease forwards, titila 3s ease-in-out 2s infinite}
+@keyframes aparece{to{opacity:1}}
+.frase{font-size:1.12rem;max-width:23ch;opacity:0;animation:aparece 1.4s ease 3.1s forwards}
+.btn{
+  font-family:var(--mano);font-size:1.6rem;font-weight:700;padding:.3rem 2.4rem .45rem;
+  background:var(--blanco);color:var(--lavanda-osc);border:2px solid var(--lavanda);border-radius:999px;
+  box-shadow:3px 4px 0 var(--rosa);transition:transform .2s,box-shadow .2s;
+}
+.btn:active{transform:translate(2px,3px);box-shadow:1px 1px 0 var(--rosa)}
+.btn[disabled]{opacity:.5;pointer-events:none}
+#btn-ver{opacity:0;animation:aparece 1s ease 4.2s forwards}
+
+/* ============ CONTENIDO ============ */
+main{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:2.2rem 1.2rem 3rem;
+  opacity:0;visibility:hidden;transition:opacity 1.2s ease .3s}
+main.visible{opacity:1;visibility:visible}
+.portada{text-align:center;padding-bottom:2.2rem}
+.portada h1{font-size:clamp(2.4rem,11vw,3.3rem);color:var(--lavanda-osc)}
+.orbita{width:96px;height:96px;margin:0 auto .2rem;display:block}
+.orbita .giro{transform-origin:50% 50%;animation:gira 9s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+
+.seccion{margin-bottom:3.2rem}
+.seccion h2{font-size:1.9rem;color:var(--lavanda-osc);text-align:center}
+.apunte{font-family:var(--mano);text-align:center;color:#8b80ad;font-size:1.1rem;margin:.1rem 0 1.2rem}
+
+/* ---- Tarjetas que se voltean ---- */
+.cosas{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.9rem}
+.tarjeta{perspective:700px;text-align:left}
+.cara-doble{display:grid;transition:transform .7s cubic-bezier(.3,.7,.2,1);transform-style:preserve-3d;height:100%}
+.tarjeta.vista .cara-doble{transform:rotateY(180deg)}
+.cara{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:16px;padding:1rem .9rem;
+  min-height:132px;display:flex;flex-direction:column;gap:.4rem}
+.frente{align-items:center;justify-content:center;text-align:center;background:var(--blanco);
+  border:1.5px solid var(--lavanda);box-shadow:3px 4px 0 var(--rosa)}
+.frente svg{width:38px;height:38px;fill:none;stroke:var(--lavanda-osc);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.frente h3{font-size:1.15rem;color:var(--tinta)}
+.dorso{transform:rotateY(180deg);background:#f6f0ff;border:1.5px dashed var(--lavanda);justify-content:center;font-size:.95rem}
+.dorso small{font-family:var(--mano);font-size:1rem;color:var(--lavanda-osc)}
+.tarjeta:nth-child(odd){transform:rotate(-1deg)}
+.tarjeta:nth-child(even){transform:rotate(1deg)}
+#contador{text-align:center;font-family:var(--mano);color:#8b80ad;margin-top:1rem;font-size:1.1rem}
+
+/* ---- Juli's Garden (minijuego Snake). Todo con prefijo "jg" ---- */
+#jg-juego{max-width:330px;margin:0 auto;font-family:ui-monospace,'SFMono-Regular','Courier New',monospace}
+.jg-caja{border:3px solid var(--lavanda-osc);background:#2a2145;box-shadow:4px 5px 0 var(--rosa)}
+.jg-barra{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.35rem .6rem;
+  color:#e7defc;font-size:.78rem;border-bottom:3px solid var(--lavanda-osc)}
+.jg-barra b{color:var(--rosa);font-weight:700}
+.jg-mini{font:inherit;font-size:.72rem;font-weight:700;color:#2a2145;background:var(--rosa);padding:.15rem .55rem;
+  box-shadow:2px 2px 0 var(--lavanda-osc)}
+.jg-mini:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--lavanda-osc)}
+.jg-mini[disabled]{opacity:.45;pointer-events:none}
+.jg-pantalla{position:relative;line-height:0}
+.jg-activo .jg-pantalla{touch-action:none}
+#jg-canvas{display:block;width:100%;height:auto;aspect-ratio:1;image-rendering:crisp-edges;image-rendering:pixelated}
+.jg-capa{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;
+  padding:1rem;text-align:center;line-height:1.4;background:rgba(34,26,58,.9);color:#f1e8ff;font-size:.8rem;
+  transition:opacity .35s ease,visibility .35s ease}
+.jg-capa.jg-oculto{opacity:0;visibility:hidden;pointer-events:none}
+.jg-titulo{font-family:inherit;font-size:1.25rem;color:var(--rosa);text-shadow:2px 2px 0 var(--lavanda-osc)}
+.jg-boton{font:inherit;font-size:.9rem;font-weight:700;color:#2a2145;background:var(--rosa);padding:.5rem 1.3rem;margin-top:.3rem;
+  box-shadow:3px 3px 0 var(--lavanda-osc)}
+.jg-boton:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--lavanda-osc)}
+.jg-pista{font-size:.7rem;color:#bfaee8}
+#jg-mensaje{font-family:var(--mano);text-align:center;color:var(--lavanda-osc);font-size:1.1rem;min-height:1.7rem;
+  margin-top:.9rem;opacity:0;transition:opacity .6s ease}
+#jg-mensaje.jg-ver{opacity:1}
+.jg-cruz{display:none;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(2,48px);gap:6px;justify-content:center;margin-top:.8rem}
+@media (pointer:coarse){.jg-cruz{display:grid}}
+.jg-dir{background:#2a2145;color:var(--rosa);border:2px solid var(--lavanda-osc);font-size:1rem;
+  box-shadow:2px 3px 0 var(--rosa);touch-action:manipulation}
+.jg-dir:active{transform:translate(1px,2px);box-shadow:1px 1px 0 var(--rosa);background:#3a2e60}
+.jg-dir[data-d="arriba"]{grid-column:2;grid-row:1}
+.jg-dir[data-d="izq"]{grid-column:1;grid-row:2}
+.jg-dir[data-d="abajo"]{grid-column:2;grid-row:2}
+.jg-dir[data-d="der"]{grid-column:3;grid-row:2}
+
+/* ---- Puertas ---- */
+.puertas{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}
+.puerta{display:flex;flex-direction:column;align-items:center;gap:.5rem;text-align:center}
+.arco{position:relative;width:100%;aspect-ratio:3/5;border-radius:999px 999px 6px 6px;overflow:hidden;
+  background:radial-gradient(circle at 50% 70%,#fff 0%,#fbe6f0 45%,#e6dcf8 100%);box-shadow:inset 0 0 14px rgba(122,100,184,.3);
+  perspective:500px}
+.arco .luz{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.arco .luz svg{width:46%;opacity:0;transform:scale(.4);transition:all .7s ease .3s}
+.hoja-puerta{position:absolute;inset:0;background:linear-gradient(160deg,#c9b9f0,var(--lavanda));transform-origin:left center;
+  transition:transform .9s cubic-bezier(.3,.7,.2,1);border-radius:inherit;border:3px solid #d9cef5}
+.hoja-puerta::after{content:"";position:absolute;right:16%;top:54%;width:9px;height:9px;border-radius:50%;background:var(--blanco)}
+.hoja-puerta::before{content:"";position:absolute;inset:14% 16% 38%;border:2px solid rgba(255,255,255,.55);border-radius:999px 999px 4px 4px}
+.puerta.abierta .hoja-puerta{transform:rotateY(-105deg)}
+.puerta.abierta .luz svg{opacity:1;transform:scale(1)}
+.puerta span{font-family:var(--mano);font-size:1rem;line-height:1.15}
+#texto-puerta{margin-top:1.4rem;min-height:6.5rem;padding:1.1rem 1.1rem;border-radius:14px;background:rgba(255,253,253,.85);
+  border:1.5px dashed var(--rosa);text-align:center;transition:opacity .4s ease}
+#texto-puerta h3{font-size:1.2rem;color:var(--lavanda-osc);margin-bottom:.2rem}
+#texto-puerta.cambia{opacity:0}
+#texto-puerta .vacio-t{color:#9b91b8;font-family:var(--mano);font-size:1.1rem}
+
+/* ---- Final ---- */
+#final{position:relative;min-height:62vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:2rem 0 3rem;overflow:visible}
+#final .msg{font-family:var(--mano);font-size:1.5rem;line-height:1.4;opacity:0;transition:opacity 1.6s ease}
+#final .firma{font-family:var(--mano);font-size:1.7rem;color:var(--lavanda-osc);margin-top:1.6rem;opacity:0;transition:opacity 1.6s ease 2.4s}
+#final.activo .msg,#final.activo .firma{opacity:1}
+.estrella-final{position:absolute;pointer-events:none;opacity:0}
+
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important;transition-delay:0s!important}
+}
+</style>
+</head>
+<body>
+<div id="polvo" aria-hidden="true"></div>
+
+<!-- ============ BIENVENIDA ============ -->
+<section id="bienvenida">
+  <!-- Constelación en forma de corazón que se dibuja sola -->
+  <svg id="constelacion" viewBox="0 0 200 180" aria-hidden="true">
+    <defs><symbol id="est" viewBox="0 0 24 24"><path d="M12 1 L14.5 9.500 L23 12 L14.5 14.500 L12 23 L9.500 14.500 L1 12 L9.500 9.500Z" fill="#fff" stroke="#b9a6e8" stroke-width="1.3" stroke-linejoin="round"/></symbol></defs>
+    <path class="linea" pathLength="1" d="M100 160 L50 110 L28 70 L40 35 L72 28 L100 55 L128 28 L160 35 L172 70 L150 110 Z"/>
+    <g id="puntos"></g>
+  </svg>
+  <p class="frase">Tengo algo preparado para ti. No es gran cosa, pero lo hice pensando en ti, espero te guste.</p>
+  <button class="btn" id="btn-ver">A ver</button>
+</section>
+
+<main id="principal">
+
+  <header class="portada">
+    <svg class="orbita" viewBox="0 0 96 96" aria-hidden="true">
+      <circle cx="48" cy="48" r="34" fill="none" stroke="#b9a6e8" stroke-width="1.5" stroke-dasharray="3 5"/>
+      <circle cx="48" cy="48" r="9" fill="#fff" stroke="#b9a6e8" stroke-width="1.5"/>
+      <g class="giro"><path transform="translate(40 8) scale(.65)" fill="#f08bb0" d="M12 21s-8-5.3-8-11a4.5 4.5 0 0 1 8-2.7A4.5 4.5 0 0 1 20 10c0 5.7-8 11-8 11z"/></g>
+    </svg>
+    <h1>para ti, corazon. FELICES 5 MESES</h1>
+  </header>
+
+  <!-- ============ COSAS QUE ME RECUERDAN A TI ============ -->
+  <section class="seccion">
+    <h2>Cosas que me recuerdan a ti</h2>
+    <p class="apunte">toca para descubrir</p>
+    <div class="cosas" id="cosas"></div>
+    <p id="contador" aria-live="polite">descubiertas: 0 de 5</p>
+  </section>
+
+  <!-- ============ JULI'S GARDEN (minijuego Snake) ============ -->
+  <section class="seccion" id="jg-seccion">
+    <h2>Juli's Garden</h2>
+    <p class="apunte">flechas, WASD o desliza el dedo</p>
+    <div id="jg-juego">
+      <div class="jg-caja">
+        <div class="jg-barra">
+          <span>puntos <b id="jg-puntos">0</b></span>
+          <span>récord <b id="jg-record">0</b></span>
+          <button class="jg-mini" id="jg-pausa" type="button" disabled>pausa</button>
+        </div>
+        <div class="jg-pantalla" id="jg-pantalla">
+          <canvas id="jg-canvas" width="240" height="240" role="img" aria-label="Juego de la serpiente: Juli's Garden"></canvas>
+
+          <!-- Pantalla de inicio -->
+          <div class="jg-capa" id="jg-inicio">
+            <h3 class="jg-titulo">¿Jugamos?</h3>
+            <p>Recoge los corazones y las flores. Sin morderte la cola.</p>
+            <button class="jg-boton" id="jg-jugar" type="button">Jugar</button>
+            <p class="jg-pista">el jardín crece contigo</p>
+          </div>
+
+          <!-- Pantalla de pausa -->
+          <div class="jg-capa jg-oculto" id="jg-en-pausa">
+            <h3 class="jg-titulo">Pausa</h3>
+            <button class="jg-boton" id="jg-seguir" type="button">Seguir</button>
+          </div>
+
+          <!-- Pantalla de Game Over -->
+          <div class="jg-capa jg-oculto" id="jg-fin">
+            <h3 class="jg-titulo">Game over</h3>
+            <p>puntos <b id="jg-fin-p">0</b> &nbsp; récord <b id="jg-fin-r">0</b></p>
+            <p id="jg-fin-nuevo" hidden>nuevo récord</p>
+            <button class="jg-boton" id="jg-otra" type="button">Jugar otra vez</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mensajes discretos al llegar a ciertos puntos -->
+      <p id="jg-mensaje" aria-live="polite"></p>
+
+      <!-- Cruceta táctil (solo se ve en pantallas táctiles) -->
+      <div class="jg-cruz" aria-label="Controles">
+        <button class="jg-dir" type="button" data-d="arriba" aria-label="Arriba">&#9650;</button>
+        <button class="jg-dir" type="button" data-d="izq" aria-label="Izquierda">&#9664;</button>
+        <button class="jg-dir" type="button" data-d="abajo" aria-label="Abajo">&#9660;</button>
+        <button class="jg-dir" type="button" data-d="der" aria-label="Derecha">&#9654;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PUERTAS ============ -->
+  <section class="seccion">
+    <h2>Elige!!</h2>
+    <p class="apunte"> si a caso puedes abrir las tres</p>
+    <div class="puertas" id="puertas"></div>
+    <div id="texto-puerta" aria-live="polite"><p class="vacio-t">¿Cuál primero?</p></div>
+  </section>
+
+  <!-- ============ DETALLE FINAL (se activa solo al llegar aquí) ============ -->
+  <section id="final">
+    <p class="msg">tenia muchos planes para esta fecha pero me limita la economia, aun asi no queria dejarla pasar por alto y aunque sea con un detalle pequeño demostrarte en el que te amo Julieth, en cada momento y en cada dia.</p>
+    <p class="firma">Con mucho mucho cariño, tu novio (julian, no el cepillo... ctm)</p>
+  </section>
+</main>
+
+<script>
+/* =====================================================================
+   ★★★ ZONA PARA PERSONALIZAR — EDITA SOLO ESTA PARTE ★★★
+   Todo lo que está entre comillas "..." se puede cambiar.
+   ===================================================================== */
+
+/* 1) Tarjetas de «Cosas que me recuerdan a ti».
+      "titulo" se ve por fuera; "texto" aparece al voltearla.
+      (No cambies "icono"; son los dibujitos.) */
+const COSAS = [
+  { titulo: "Una canción",            icono: "cancion",
+    texto: "Coastline - Hollow Coves" },
+  { titulo: "un lugar",               icono: "lugar",
+    texto: "parque simon bolivar... nuestro sitio" },
+  { titulo: "algo que amo de ti",     icono: "costumbre",
+    texto: "amo la forma en la que hablas y como suena tu voz" },
+  { titulo: "algo que hacemos juntos",  icono: "juntos",
+    texto: "siempre veo el jenga y pienso en ti (y que siempre gano yo jejejejeje)" },
+  { titulo: "Una cosa cotidiana",     icono: "cotidiana",
+    texto: "siempre que preparo el desayuno pienso como te gustaria a ti" }
+];
+
+/* 2) Juli's Garden (minijuego). Mensajes que aparecen al llegar a cierto puntaje.
+      La clave es el número de puntos; cambia los textos o añade más puntajes.
+      JG_PUNTO_SORPRESA es el puntaje en el que además se lanza una lluvia de corazones. */
+const JG_MENSAJES = {
+  5:  "Qué bonito que sigas aquí.",
+  15: "Quince. Gracias por quedarte jugando un rato conmigo.",
+  30: "Treinta. Cupón desbloqueado: un helado a tu elección, pago yo."
+};
+const JG_PUNTO_SORPRESA = 30;
+
+/* 3) Las tres puertas. */
+const PUERTAS = [
+  { etiqueta: "aun esta pendiente...",
+    texto: "pintar ceramicas y hacer un skincare casero" },
+  { etiqueta: "Una pequeña sorpresa",
+    texto: "al leer esta avisame y cierra los ojos (SIN TRAMPA)" },
+  { etiqueta: "estoy aqui",
+    texto: "cuando te digo que te amo quiero decirte que estoy contigo y para ti en cada momento" }
+];
+
+/* =====================================================================
+   FIN DE LA ZONA DE PERSONALIZACIÓN (lo de abajo es el funcionamiento)
+   ===================================================================== */
+
+const $ = id => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+const reducir = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* Dibujos de las tarjetas (viewBox 24x24) */
+const ICONOS = {
+  cancion:   'M9 18V5l11-2v13 M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0z M20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z',
+  lugar:     'M12 22s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12z M12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z',
+  costumbre: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M8 14s1.5 2.5 4 2.5 4-2.5 4-2.5 M9 9.5h.01 M15 9.5h.01',
+  juntos:    'M12 3l2.6 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8l-5.3 2.9 1.1-6.1L3.3 9.4l6.1-.8z',
+  cotidiana: 'M5 9h11v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z M16 10h2a2 2 0 0 1 0 4h-2 M8 3v3 M12 3v3'
+};
+const CORAZON = 'M12 21s-8-5.3-8-11a4.5 4.5 0 0 1 8-2.7A4.5 4.5 0 0 1 20 10c0 5.7-8 11-8 11z';
+const ESTRELLA = 'M12 1 L14.5 9.5 L23 12 L14.5 14.5 L12 23 L9.5 14.5 L1 12 L9.5 9.5Z';
+
+/* ---------- Fondo: polvo de estrellas + estrella fugaz ---------- */
+(function fondo(){
+  const cont = $('polvo');
+  for (let i = 0; i < 30; i++){
+    const s = 8 + Math.random() * 14, el = document.createElementNS(NS, 'svg');
+    el.setAttribute('viewBox', '0 0 24 24');
+    const rosa = i % 5 === 0;
+    el.innerHTML = `<path d="${rosa ? CORAZON : ESTRELLA}" fill="${rosa ? '#f8d3e2' : '#fff'}" stroke="${rosa ? '#f3b6cf' : '#b9a6e8'}" stroke-width="1.2" stroke-linejoin="round"/>`;
+    el.style.cssText = `width:${s}px;height:${s}px;left:${Math.random()*100}%;top:${Math.random()*100}%;` +
+      `animation-delay:${Math.random()*4}s;animation-duration:${3+Math.random()*3}s`;
+    cont.appendChild(el);
+  }
+  if (reducir) return;
+  // una estrella fugaz de vez en cuando
+  setInterval(() => {
+    const f = document.createElement('div');
+    f.style.cssText = 'position:absolute;width:70px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#b9a6e8);' +
+      `top:${Math.random()*40}%;left:${30+Math.random()*60}%;opacity:0`;
+    cont.appendChild(f);
+    f.animate([
+      { transform:'translate(0,0) rotate(28deg)', opacity:0 },
+      { opacity:.9, offset:.2 },
+      { transform:'translate(-160px,90px) rotate(28deg)', opacity:0 }
+    ], { duration:1400, easing:'ease-in' }).onfinish = () => f.remove();
+  }, 9000);
+})();
+
+/* ---------- Bienvenida: estrellas de la constelación ---------- */
+(function puntos(){
+  const pts = [[100,160],[50,110],[28,70],[40,35],[72,28],[100,55],[128,28],[160,35],[172,70],[150,110]];
+  pts.forEach((p, i) => {
+    const u = document.createElementNS(NS, 'use');
+    u.setAttribute('href', '#est');
+    u.setAttribute('x', p[0] - 7); u.setAttribute('y', p[1] - 7);
+    u.setAttribute('width', 14); u.setAttribute('height', 14);
+    u.setAttribute('class', 'e');
+    u.style.animationDelay = (0.3 + i * 0.3) + 's, ' + (2 + i * .2) + 's';
+    $('puntos').appendChild(u);
+  });
+})();
+$('btn-ver').addEventListener('click', () => {
+  $('btn-ver').disabled = true;
+  $('bienvenida').classList.add('fuera');
+  $('principal').classList.add('visible');
+  window.scrollTo(0, 0);
+});
+
+/* ---------- Tarjetas que se voltean ---------- */
+(function cosas(){
+  const cont = $('cosas'); let vistas = 0;
+  COSAS.forEach(c => {
+    const b = document.createElement('button');
+    b.className = 'tarjeta';
+    b.setAttribute('aria-label', c.titulo + '. Toca para descubrir');
+    b.innerHTML =
+      '<div class="cara-doble">' +
+        '<div class="cara frente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + ICONOS[c.icono] + '"/></svg><h3>' + c.titulo + '</h3></div>' +
+        '<div class="cara dorso"><small>' + c.titulo + '</small><p>' + c.texto + '</p></div>' +
+      '</div>';
+    b.addEventListener('click', () => {
+      const primera = !b.dataset.vista;
+      b.classList.toggle('vista');
+      if (primera){
+        b.dataset.vista = '1'; vistas++;
+        $('contador').textContent = vistas === COSAS.length
+          ? 'descubiertas: ' + vistas + ' de ' + COSAS.length + '. Las tocaste todas, claro.'
+          : 'descubiertas: ' + vistas + ' de ' + COSAS.length;
+      }
+    });
+    cont.appendChild(b);
+  });
+})();
+
+/* ---------- Juli's Garden (minijuego Snake) ----------
+   Todo el juego vive en esta función y usa el prefijo "jg" para no chocar
+   con nada del resto de la página. Los mensajes se editan arriba (JG_MENSAJES). */
+(function jgJuego(){
+  const lienzo = $('jg-canvas'), ctx = lienzo.getContext('2d');
+  const N = 15, C = 16, W = N * C;                    // tablero de 15x15 casillas de 16 px
+  const CLAVE_RECORD = 'julisGardenRecord';
+  const caja = $('jg-juego'), pantalla = $('jg-pantalla'), btnPausa = $('jg-pausa'), msg = $('jg-mensaje');
+  const COL = { fondo:'#2a2145', fondo2:'#30264f', cuerpoA:'#b9a6e8', cuerpoB:'#a48fdb', brillo:'#e7defc',
+                cabeza:'#dcd2f7', ojo:'#2a2145', rosa:'#f08bb0', rosaClaro:'#fbd0e0', centro:'#ffe7a8' };
+
+  let estado = 'inicio';                              // inicio | jugando | pausa | fin
+  let serp, dir, cola, comida, puntos = 0, record = 0, vel = 150, reloj = null, tic = 0, particulas = [], tmsg = null, visible = true;
+
+  try { record = parseInt(localStorage.getItem(CLAVE_RECORD), 10) || 0; } catch(e){}
+  $('jg-record').textContent = record;
+
+  // estrellitas fijas del fondo (parpadean)
+  const astros = Array.from({length: 22}, () => ({
+    x: Math.floor(Math.random() * W / 2) * 2, y: Math.floor(Math.random() * W / 2) * 2, f: Math.random() * 100 }));
+
+  /* ----- Dibujo pixel art ----- */
+  function px(x, y, w, h, c){ ctx.fillStyle = c; ctx.fillRect(x, y, w, h); }
+  const CORAZON_PX = ['01100110','11111111','11111111','11111111','01111110','00111100','00011000'];
+  function dibujaCorazon(cx, cy){
+    CORAZON_PX.forEach((fila, j) => { for (let i = 0; i < 8; i++) if (fila[i] === '1') px(cx + i*2, cy + j*2 + 1, 2, 2, COL.rosa); });
+    px(cx + 2, cy + 3, 2, 2, COL.rosaClaro);
+  }
+  function dibujaFlor(cx, cy){
+    const b = (i, j, c) => px(cx + i*2, cy + j*2, 2, 2, c);
+    [[3,0],[4,0],[3,1],[4,1],[3,6],[4,6],[3,7],[4,7],[0,3],[1,3],[0,4],[1,4],[6,3],[7,3],[6,4],[7,4],
+     [3,2],[4,2],[3,5],[4,5],[2,3],[2,4],[5,3],[5,4]].forEach(p => b(p[0], p[1], COL.rosa));
+    [[3,3],[4,3],[3,4],[4,4]].forEach(p => b(p[0], p[1], COL.centro));
+  }
+  function dibujaSerpiente(){
+    serp.forEach((s, i) => {
+      if (i === 0) return;
+      const x = s.x * C, y = s.y * C, punta = i === serp.length - 1 && serp.length > 3, m = punta ? 4 : 1;
+      px(x + m, y + m, C - 2*m, C - 2*m, i % 2 ? COL.cuerpoA : COL.cuerpoB);
+      if (!punta) px(x + m + 1, y + m + 1, 3, 3, COL.brillo);       // brillito
+    });
+    const h = serp[0], x = h.x * C, y = h.y * C;
+    px(x, y + 1, C, C - 2, COL.cabeza); px(x + 1, y, C - 2, C, COL.cabeza);   // cabeza con esquinas redondeadas
+    const ojos = dir.x === 1 ? [[10,3],[10,10]] : dir.x === -1 ? [[4,3],[4,10]] : dir.y === -1 ? [[3,4],[10,4]] : [[3,10],[10,10]];
+    ojos.forEach(o => px(x + o[0], y + o[1], 3, 3, COL.ojo));
+    const bx = x + (dir.x === -1 ? C - 5 : 0), by = y + (dir.y === -1 ? C - 5 : 0);   // moñito rosa en la nuca
+    px(bx, by + 1, 2, 3, COL.rosa); px(bx + 3, by + 1, 2, 3, COL.rosa); px(bx + 2, by + 1, 1, 3, COL.rosaClaro);
+  }
+  function dibujar(){
+    tic++;
+    for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) px(i*C, j*C, C, C, (i + j) % 2 ? COL.fondo2 : COL.fondo);
+    astros.forEach(a => { ctx.globalAlpha = .25 + .6 * (Math.sin((tic + a.f * 5) / 25) + 1) / 2; px(a.x, a.y, 2, 2, '#ffffff'); });
+    ctx.globalAlpha = 1;
+    if (comida){
+      const oy = Math.floor(tic / 20) % 2;                          // la comida "respira"
+      comida.tipo === 'flor' ? dibujaFlor(comida.x * C, comida.y * C + oy) : dibujaCorazon(comida.x * C, comida.y * C + oy);
+    }
+    dibujaSerpiente();
+    particulas = particulas.filter(p => p.v > 0);
+    particulas.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.vy += .04; p.v--;
+      ctx.globalAlpha = Math.min(1, p.v / 20); px(Math.round(p.x), Math.round(p.y), 3, 3, p.c);
+    });
+    ctx.globalAlpha = 1;
+  }
+  function chispas(x, y, n, fuerza, vida){
+    if (reducir) return;
+    for (let i = 0; i < n; i++){
+      const a = Math.random() * Math.PI * 2, v = (.4 + Math.random()) * fuerza;
+      particulas.push({ x:x, y:y, vx:Math.cos(a) * v, vy:Math.sin(a) * v - .3, v:vida * (.6 + Math.random() * .6),
+                        c:[COL.rosa, COL.brillo, '#ffffff', COL.cuerpoA][i % 4] });
+    }
+  }
+
+  /* ----- Lógica del juego ----- */
+  function ponerComida(){
+    const libres = [];
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) if (!serp.some(s => s.x === x && s.y === y)) libres.push({x:x, y:y});
+    if (!libres.length){ comida = null; return false; }
+    const c = libres[Math.floor(Math.random() * libres.length)];
+    comida = { x:c.x, y:c.y, tipo: Math.random() < .5 ? 'corazon' : 'flor' };
+    return true;
+  }
+  function reiniciar(){
+    serp = [{x:7,y:7},{x:6,y:7},{x:5,y:7}]; dir = {x:1,y:0}; cola = [];
+    puntos = 0; vel = 150; $('jg-puntos').textContent = 0;
+    msg.classList.remove('jg-ver'); particulas = [];
+    ponerComida();
+  }
+  function mostrarMensaje(t){
+    msg.textContent = t; msg.classList.add('jg-ver');
+    clearTimeout(tmsg); tmsg = setTimeout(() => msg.classList.remove('jg-ver'), 5000);
+  }
+  function ponEstado(e){
+    estado = e;
+    caja.classList.toggle('jg-activo', e === 'jugando');
+    $('jg-inicio').classList.toggle('jg-oculto', e !== 'inicio');
+    $('jg-en-pausa').classList.toggle('jg-oculto', e !== 'pausa');
+    $('jg-fin').classList.toggle('jg-oculto', e !== 'fin');
+    btnPausa.disabled = !(e === 'jugando' || e === 'pausa');
+    btnPausa.textContent = e === 'pausa' ? 'seguir' : 'pausa';
+  }
+  function bucle(){
+    if (estado !== 'jugando') return;
+    paso();
+    if (estado === 'jugando') reloj = setTimeout(bucle, vel);
+  }
+  function paso(){
+    if (cola.length) dir = cola.shift();
+    const h = { x: serp[0].x + dir.x, y: serp[0].y + dir.y };
+    if (h.x < 0 || h.y < 0 || h.x >= N || h.y >= N) return terminar();              // choque con el borde
+    const come = comida && h.x === comida.x && h.y === comida.y;
+    const cuerpo = come ? serp : serp.slice(0, -1);
+    if (cuerpo.some(s => s.x === h.x && s.y === h.y)) return terminar();            // choque con el cuerpo
+    serp.unshift(h);
+    if (!come){ serp.pop(); return; }
+    puntos++; $('jg-puntos').textContent = puntos;
+    vel = Math.max(70, 150 - puntos * 4);                                           // cada punto, un poco más rápido
+    chispas(h.x * C + 8, h.y * C + 8, 8, 1.6, 30);
+    if (JG_MENSAJES[puntos]) mostrarMensaje(JG_MENSAJES[puntos]);
+    if (puntos === JG_PUNTO_SORPRESA) chispas(W / 2, W / 2, 48, 2.6, 90);          // lluvia de corazones
+    if (!ponerComida()) terminar();                                                  // tablero lleno
+  }
+  function comenzar(){ reiniciar(); ponEstado('jugando'); clearTimeout(reloj); reloj = setTimeout(bucle, vel); }
+  function pausar(){ if (estado !== 'jugando') return; clearTimeout(reloj); ponEstado('pausa'); }
+  function reanudar(){ if (estado !== 'pausa') return; ponEstado('jugando'); clearTimeout(reloj); reloj = setTimeout(bucle, vel); }
+  function terminar(){
+    clearTimeout(reloj);
+    const nuevo = puntos > record;
+    if (nuevo){ record = puntos; try { localStorage.setItem(CLAVE_RECORD, record); } catch(e){} $('jg-record').textContent = record; }
+    $('jg-fin-p').textContent = puntos; $('jg-fin-r').textContent = record; $('jg-fin-nuevo').hidden = !nuevo;
+    ponEstado('fin');
+  }
+
+  /* ----- Controles ----- */
+  function girar(dx, dy){
+    if (estado !== 'jugando') return;
+    const u = cola.length ? cola[cola.length - 1] : dir;
+    if ((dx === u.x && dy === u.y) || (dx === -u.x && dy === -u.y)) return;        // misma dirección o reversa
+    if (cola.length < 2) cola.push({x:dx, y:dy});
+  }
+  const TECLAS = { ArrowUp:[0,-1], w:[0,-1], W:[0,-1], ArrowDown:[0,1], s:[0,1], S:[0,1],
+                   ArrowLeft:[-1,0], a:[-1,0], A:[-1,0], ArrowRight:[1,0], d:[1,0], D:[1,0] };
+  window.addEventListener('keydown', e => {
+    if (e.target && e.target.closest && e.target.closest('input,textarea')) return;
+    if ((e.key === 'p' || e.key === 'P') && visible){ estado === 'jugando' ? pausar() : reanudar(); return; }
+    const t = TECLAS[e.key];
+    if (!t || estado !== 'jugando') return;
+    e.preventDefault();                                                              // que la página no baje con las flechas
+    girar(t[0], t[1]);
+  });
+  // deslizar el dedo sobre el tablero
+  let t0 = null;
+  pantalla.addEventListener('touchstart', e => { const t = e.touches[0]; t0 = { x:t.clientX, y:t.clientY }; }, { passive:true });
+  pantalla.addEventListener('touchmove', e => {
+    if (estado !== 'jugando' || !t0) return;
+    e.preventDefault();
+    const t = e.touches[0], dx = t.clientX - t0.x, dy = t.clientY - t0.y;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 14) return;
+    Math.abs(dx) > Math.abs(dy) ? girar(dx > 0 ? 1 : -1, 0) : girar(0, dy > 0 ? 1 : -1);
+    t0 = { x:t.clientX, y:t.clientY };
+  }, { passive:false });
+  // cruceta táctil
+  const DIRS = { arriba:[0,-1], izq:[-1,0], abajo:[0,1], der:[1,0] };
+  document.querySelectorAll('.jg-dir').forEach(b => b.addEventListener('pointerdown', e => {
+    e.preventDefault(); const d = DIRS[b.dataset.d]; girar(d[0], d[1]);
+  }));
+  // botones
+  $('jg-jugar').addEventListener('click', comenzar);
+  $('jg-otra').addEventListener('click', comenzar);
+  $('jg-seguir').addEventListener('click', reanudar);
+  btnPausa.addEventListener('click', () => estado === 'jugando' ? pausar() : reanudar());
+  // se pausa sola si ella se va de la sección o cambia de pestaña
+  new IntersectionObserver(es => { visible = es[0].isIntersecting; if (!visible) pausar(); }, { threshold: .3 }).observe(caja);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) pausar(); });
+
+  reiniciar();                                       // serpiente de adorno detrás de la pantalla de inicio
+  ponEstado('inicio');
+  (function anima(){ dibujar(); requestAnimationFrame(anima); })();   // bucle de dibujo (estrellas, comida, partículas)
+})();
+
+/* ---------- Puertas ---------- */
+(function puertas(){
+  const panel = $('texto-puerta');
+  const dibujos = [ESTRELLA, CORAZON, ESTRELLA];
+  PUERTAS.forEach((p, i) => {
+    const b = document.createElement('button');
+    b.className = 'puerta';
+    b.setAttribute('aria-label', 'Puerta: ' + p.etiqueta);
+    b.innerHTML = '<div class="arco"><div class="luz"><svg viewBox="0 0 24 24"><path d="' + dibujos[i] +
+      '" fill="' + (i === 1 ? '#f08bb0' : '#fff') + '" stroke="#b9a6e8" stroke-width="1.2" stroke-linejoin="round"/></svg></div>' +
+      '<div class="hoja-puerta"></div></div><span>' + p.etiqueta + '</span>';
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.puerta').forEach(x => x.classList.remove('abierta'));
+      b.classList.add('abierta');
+      panel.classList.add('cambia');
+      setTimeout(() => {
+        panel.innerHTML = '<h3>' + p.etiqueta + '</h3><p>' + p.texto + '</p>';
+        panel.classList.remove('cambia');
+      }, reducir ? 0 : 350);
+    });
+    $('puertas').appendChild(b);
+  });
+})();
+
+/* ---------- Detalle final: se activa al llegar ---------- */
+(function final(){
+  const sec = $('final'); let hecho = false;
+  function activar(){
+    if (hecho) return; hecho = true;
+    sec.classList.add('activo');
+    if (reducir) return;
+    for (let i = 0; i < 26; i++){
+      const el = document.createElementNS(NS, 'svg');
+      el.setAttribute('viewBox', '0 0 24 24');
+      el.setAttribute('class', 'estrella-final');
+      const rosa = i % 4 === 0, s = 10 + Math.random() * 18;
+      el.innerHTML = `<path d="${rosa ? CORAZON : ESTRELLA}" fill="${rosa ? '#f08bb0' : '#fff'}" stroke="${rosa ? '#f08bb0' : '#b9a6e8'}" stroke-width="1.2" stroke-linejoin="round"/>`;
+      el.style.cssText = `width:${s}px;height:${s}px;left:${Math.random()*95}%;top:${Math.random()*95}%`;
+      sec.appendChild(el);
+      el.animate([
+        { opacity:0, transform:'translateY(14px) scale(.3)' },
+        { opacity:1, transform:'translateY(0) scale(1)', offset:.4 },
+        { opacity:.35, transform:'translateY(-6px) scale(.9)' }
+      ], { duration:2600, delay:Math.random()*2800, fill:'forwards', easing:'ease-out' });
+    }
+  }
+  new IntersectionObserver((es, ob) => {
+    if (es[0].isIntersecting){ activar(); ob.disconnect(); }
+  }, { threshold: 0.6 }).observe(sec);
+})();
+
+/* ---------- Detalle escondido: toca el fondo y salen estrellitas ---------- */
+document.addEventListener('click', e => {
+  if (reducir || e.target.closest('button,input,#jg-juego,#bienvenida')) return;
+  const el = document.createElementNS(NS, 'svg'), rosa = Math.random() < .35;
+  el.setAttribute('viewBox', '0 0 24 24');
+  el.innerHTML = `<path d="${rosa ? CORAZON : ESTRELLA}" fill="${rosa ? '#f08bb0' : '#fff'}" stroke="${rosa ? '#f08bb0' : '#b9a6e8'}" stroke-width="1.2" stroke-linejoin="round"/>`;
+  el.style.cssText = `position:fixed;z-index:20;width:18px;height:18px;left:${e.clientX-9}px;top:${e.clientY-9}px;pointer-events:none`;
+  document.body.appendChild(el);
+  el.animate([
+    { transform:'translateY(0) scale(.4)', opacity:1 },
+    { transform:`translate(${Math.random()*30-15}px,-60px) scale(1.2) rotate(40deg)`, opacity:0 }
+  ], { duration:1100, easing:'ease-out' }).onfinish = () => el.remove();
+});
+</script>
+</body>
+</html>
